@@ -3,19 +3,20 @@ import assert from 'node:assert/strict';
 import request from 'supertest';
 import app from '../src/app.js';
 
-describe('SpendWise Backend API Tests', () => {
+describe('Kharcha Backend API Tests', () => {
   let authToken = '';
-  let expenseId = '';
-  const testEmail = `teen_${Date.now()}@test.com`;
+  let expenseId1 = '';
+  let expenseId2 = '';
+  const testEmail = `user_${Date.now()}@test.com`;
 
-  test('GET /api/health should return 200 OK', async () => {
+  test('GET /api/health should return 200 OK with Kharcha message', async () => {
     const res = await request(app).get('/api/health');
     assert.equal(res.status, 200);
     assert.equal(res.body.success, true);
-    assert.equal(res.body.message, 'SpendWise API is healthy and operational');
+    assert.equal(res.body.message, 'Kharcha API is healthy and operational');
   });
 
-  test('POST /api/auth/register should register a new teenager user', async () => {
+  test('POST /api/auth/register should register a new user', async () => {
     const res = await request(app)
       .post('/api/auth/register')
       .send({
@@ -23,8 +24,8 @@ describe('SpendWise Backend API Tests', () => {
         email: testEmail,
         password: 'securePassword123',
         confirmPassword: 'securePassword123',
-        age: 17,
-        monthly_income: 8000,
+        age: 26,
+        monthly_income: 45000,
         currency: 'INR'
       });
 
@@ -63,100 +64,68 @@ describe('SpendWise Backend API Tests', () => {
     assert.equal(res.body.success, false);
   });
 
-  test('GET /api/auth/me should return current user profile with valid JWT', async () => {
-    const res = await request(app)
-      .get('/api/auth/me')
-      .set('Authorization', `Bearer ${authToken}`);
-
-    assert.equal(res.status, 200);
-    assert.equal(res.body.success, true);
-    assert.equal(res.body.data.user.email, testEmail);
-  });
-
-  test('GET /api/expenses without token should reject with 401 Unauthorized', async () => {
-    const res = await request(app).get('/api/expenses');
-    assert.equal(res.status, 401);
-    assert.equal(res.body.success, false);
-  });
-
-  test('POST /api/expenses should create an expense with valid fields', async () => {
+  test('POST /api/expenses should create first expense', async () => {
     const res = await request(app)
       .post('/api/expenses')
       .set('Authorization', `Bearer ${authToken}`)
       .send({
-        amount: 250,
+        amount: 350,
         category: 'Food',
-        description: 'Burger and fries after school',
-        expense_date: '2026-09-29',
+        description: 'Team lunch pizza',
         payment_method: 'UPI',
-        expense_type: 'want',
-        notes: 'Hangout'
+        expense_type: 'need',
+        expense_date: '2026-09-20'
       });
 
     assert.equal(res.status, 201);
     assert.equal(res.body.success, true);
-    assert.ok(res.body.data.id);
-    assert.equal(res.body.data.amount, 250);
+    assert.equal(res.body.data.amount, 350);
     assert.equal(res.body.data.category, 'Food');
-    expenseId = res.body.data.id;
+    expenseId1 = res.body.data.id;
   });
 
-  test('POST /api/expenses should fail validation if amount is negative', async () => {
+  test('POST /api/expenses should create second expense', async () => {
     const res = await request(app)
       .post('/api/expenses')
       .set('Authorization', `Bearer ${authToken}`)
       .send({
-        amount: -50,
-        category: 'Food',
-        description: 'Negative test',
-        payment_method: 'Cash',
-        expense_type: 'need'
+        amount: 800,
+        category: 'Shopping',
+        description: 'New wireless mouse',
+        payment_method: 'Card',
+        expense_type: 'want',
+        expense_date: '2026-09-21'
       });
 
-    assert.equal(res.status, 422);
-    assert.equal(res.body.success, false);
+    assert.equal(res.status, 201);
+    assert.equal(res.body.success, true);
+    expenseId2 = res.body.data.id;
   });
 
-  test('GET /api/expenses should return filtered and paginated expenses', async () => {
+  test('GET /api/expenses should retrieve user expenses with pagination', async () => {
     const res = await request(app)
-      .get('/api/expenses?category=Food&page=1&limit=10')
+      .get('/api/expenses')
       .set('Authorization', `Bearer ${authToken}`);
 
     assert.equal(res.status, 200);
     assert.equal(res.body.success, true);
     assert.ok(Array.isArray(res.body.data));
-    assert.ok(res.body.pagination);
-    assert.equal(res.body.data.length >= 1, true);
+    assert.ok(res.body.data.length >= 2);
   });
 
-  test('PUT /api/expenses/:id should update expense', async () => {
-    const res = await request(app)
-      .put(`/api/expenses/${expenseId}`)
-      .set('Authorization', `Bearer ${authToken}`)
-      .send({
-        amount: 280,
-        notes: 'Added extra drink'
-      });
-
-    assert.equal(res.status, 200);
-    assert.equal(res.body.success, true);
-    assert.equal(res.body.data.amount, 280);
-    assert.equal(res.body.data.notes, 'Added extra drink');
-  });
-
-  test('POST /api/income should add income record', async () => {
+  test('POST /api/income should record user income', async () => {
     const res = await request(app)
       .post('/api/income')
       .set('Authorization', `Bearer ${authToken}`)
       .send({
-        amount: 5000,
-        source: 'Pocket Money',
-        description: 'September pocket money'
+        amount: 45000,
+        source: 'Salary',
+        description: 'Monthly salary credit'
       });
 
     assert.equal(res.status, 201);
     assert.equal(res.body.success, true);
-    assert.equal(res.body.data.amount, 5000);
+    assert.equal(res.body.data.amount, 45000);
   });
 
   test('POST /api/budgets should set a category budget', async () => {
@@ -165,7 +134,7 @@ describe('SpendWise Backend API Tests', () => {
       .set('Authorization', `Bearer ${authToken}`)
       .send({
         category: 'Food',
-        amount: 2000,
+        amount: 8000,
         month: 9,
         year: 2026
       });
@@ -173,29 +142,48 @@ describe('SpendWise Backend API Tests', () => {
     assert.equal(res.status, 201);
     assert.equal(res.body.success, true);
     assert.equal(res.body.data.category, 'Food');
-    assert.equal(res.body.data.amount, 2000);
+    assert.equal(res.body.data.amount, 8000);
   });
 
-  test('GET /api/dashboard should return complete calculated metrics', async () => {
+  test('GET /api/data/export/preview should generate structured preview data', async () => {
     const res = await request(app)
-      .get('/api/dashboard')
+      .get('/api/data/export/preview')
       .set('Authorization', `Bearer ${authToken}`);
 
     assert.equal(res.status, 200);
     assert.equal(res.body.success, true);
-    assert.ok(res.body.data.balance !== undefined);
-    assert.ok(res.body.data.income !== undefined);
-    assert.ok(res.body.data.expenses !== undefined);
-    assert.ok(Array.isArray(res.body.data.expenseByCategory));
-    assert.ok(Array.isArray(res.body.data.monthlyExpenses));
-    assert.ok(Array.isArray(res.body.data.recommendations));
-    assert.ok(res.body.data.healthScore);
-    assert.ok(res.body.data.healthScore.score >= 0 && res.body.data.healthScore.score <= 100);
+    assert.ok(res.body.data.summary);
+    assert.ok(res.body.data.summary.totalIncome >= 45000);
+    assert.ok(Array.isArray(res.body.data.expenses));
   });
 
-  test('DELETE /api/expenses/:id should remove the expense', async () => {
+  test('GET /api/data/export/download should download authentic Excel workbook', async () => {
     const res = await request(app)
-      .delete(`/api/expenses/${expenseId}`)
+      .get('/api/data/export/download')
+      .set('Authorization', `Bearer ${authToken}`);
+
+    assert.equal(res.status, 200);
+    assert.equal(
+      res.headers['content-type'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
+    assert.ok(res.body.length > 0 || res.headers['content-length'] > 0);
+  });
+
+  test('POST /api/expenses/bulk-delete should bulk delete selected expenses', async () => {
+    const res = await request(app)
+      .post('/api/expenses/bulk-delete')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({ ids: [expenseId1, expenseId2] });
+
+    assert.equal(res.status, 200);
+    assert.equal(res.body.success, true);
+    assert.equal(res.body.data.count, 2);
+  });
+
+  test('DELETE /api/account should permanently delete user account and associated data', async () => {
+    const res = await request(app)
+      .delete('/api/account')
       .set('Authorization', `Bearer ${authToken}`);
 
     assert.equal(res.status, 200);

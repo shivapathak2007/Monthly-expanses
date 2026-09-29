@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.js';
-import { Wallet, Lock, Mail, ArrowRight, Sparkles } from 'lucide-react';
+import { Wallet, Lock, Mail, ArrowRight, Sparkles, UserPlus } from 'lucide-react';
 
 export const Login = () => {
   const [email, setEmail] = useState('');
@@ -12,6 +12,8 @@ export const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const isAddAccount = new URLSearchParams(location.search).get('addAccount') === 'true';
   const from = location.state?.from?.pathname || '/dashboard';
 
   const handleSubmit = async (e) => {
@@ -19,7 +21,7 @@ export const Login = () => {
     setFormError('');
     setLoading(true);
 
-    const result = await login(email, password);
+    const result = await login(email, password, isAddAccount);
     setLoading(false);
 
     if (result.success) {
@@ -34,22 +36,48 @@ export const Login = () => {
     setPassword('password123');
   };
 
+  const isDeleted = new URLSearchParams(location.search).get('deleted') === 'true';
+
   return (
     <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 text-white shadow-lg shadow-brand-500/25 mb-4">
           <Wallet className="w-8 h-8" />
         </div>
-        <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Welcome to <span className="text-brand-600 dark:text-brand-400">SpendWise</span>
-        </h2>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-          Understand your money. Control your spending. Build your future.
-        </p>
+
+        {isAddAccount ? (
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-50 dark:bg-brand-950/70 border border-brand-200 dark:border-brand-800 rounded-full text-xs font-bold text-brand-700 dark:text-brand-300 mb-2">
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>Multi-Account Switcher</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Add Another Account
+            </h2>
+            <p className="mt-1.5 text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+              Sign in to save this account on this device. You can easily switch between them anytime!
+            </p>
+          </div>
+        ) : (
+          <div>
+            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Welcome to <span className="text-brand-600 dark:text-brand-400">Kharcha</span>
+            </h2>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+              Personal expense tracking and smart money management for everyone.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
         <div className="bg-white dark:bg-slate-900 py-8 px-6 sm:px-10 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-card">
+          {isDeleted && (
+            <div className="mb-5 p-3.5 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 rounded-xl text-xs text-emerald-800 dark:text-emerald-300 font-semibold">
+              ✓ Your account and associated data have been permanently deleted.
+            </div>
+          )}
+
           {formError && (
             <div className="mb-5 p-3.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-200/70 dark:border-rose-900/50 rounded-xl text-xs text-rose-700 dark:text-rose-300 font-medium">
               {formError}
@@ -66,7 +94,7 @@ export const Login = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="teen@example.com"
+                  placeholder="user@example.com"
                   className="input-field pl-10"
                 />
               </div>
@@ -96,7 +124,7 @@ export const Login = () => {
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  <span>Sign In</span>
+                  <span>{isAddAccount ? 'Add Account & Sign In' : 'Sign In'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}

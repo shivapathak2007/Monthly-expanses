@@ -144,6 +144,31 @@ export class ExpenseController {
       next(err);
     }
   }
+
+  static async bulkDeleteExpenses(req, res, next) {
+    try {
+      const { ids } = req.body;
+      const userId = req.user.id;
+
+      if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid request',
+          error: 'An array of expense IDs is required for bulk deletion'
+        });
+      }
+
+      const deletedCount = await ExpenseModel.bulkDelete(ids, userId);
+
+      return res.status(200).json({
+        success: true,
+        message: `Successfully deleted ${deletedCount} expense${deletedCount === 1 ? '' : 's'}`,
+        data: { count: deletedCount }
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export default ExpenseController;

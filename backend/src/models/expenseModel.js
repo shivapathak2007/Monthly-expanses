@@ -172,6 +172,18 @@ export class ExpenseModel {
     if (error) throw error;
     return true;
   }
+
+  static async bulkDelete(ids, userId) {
+    if (!Array.isArray(ids) || ids.length === 0) return 0;
+    const { error } = await db
+      .from('expenses')
+      .delete()
+      .in('id', ids)
+      .eq('user_id', userId);
+
+    if (error) throw error;
+    return ids.length;
+  }
 }
 
 export default ExpenseModel;

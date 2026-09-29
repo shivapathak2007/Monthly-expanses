@@ -72,6 +72,24 @@ export class UserController {
       next(err);
     }
   }
+
+  static async deleteAccount(req, res, next) {
+    try {
+      const userId = req.user.id;
+      await UserModel.deleteAccount(userId);
+
+      // Invalidate cookies if any
+      res.clearCookie('spendwise_token');
+      res.clearCookie('kharcha_token');
+
+      return res.status(200).json({
+        success: true,
+        message: 'Your Kharcha account and all associated financial data have been permanently deleted.'
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export default UserController;

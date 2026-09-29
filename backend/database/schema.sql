@@ -1,7 +1,7 @@
 -- ====================================================================
--- SpendWise Database Schema
+-- Kharcha Database Schema
 -- Target: Supabase / PostgreSQL
--- Description: Core tables, constraints, indexes and triggers for SpendWise
+-- Description: Core tables, constraints, indexes and triggers for Kharcha
 -- ====================================================================
 
 -- Enable pgcrypto for UUID generation if not already enabled
@@ -112,7 +112,7 @@ ALTER TABLE income ENABLE ROW LEVEL SECURITY;
 ALTER TABLE budgets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE financial_goals ENABLE ROW LEVEL SECURITY;
 
--- Note: In SpendWise backend MVC architecture, the server connects via 
+-- Note: In Kharcha backend MVC architecture, the server connects via 
 -- SUPABASE_SERVICE_ROLE_KEY to bypass RLS safely, and all authorization is strictly 
 -- validated in authMiddleware and controllers by authenticated user ID.
 -- However, if direct client queries are ever enabled:

@@ -12,7 +12,7 @@ const api = axios.create({
 
 // Request interceptor to automatically attach JWT token from localStorage if available
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('spendwise_token');
+  const token = localStorage.getItem('kharcha_token') || localStorage.getItem('spendwise_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -28,6 +28,8 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       // Clear token on unauthorized response (if not already on login/register)
       if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/register')) {
+        localStorage.removeItem('kharcha_token');
+        localStorage.removeItem('kharcha_user');
         localStorage.removeItem('spendwise_token');
         localStorage.removeItem('spendwise_user');
       }
@@ -50,7 +52,8 @@ export const expenseService = {
   getExpenseById: (id) => api.get(`/expenses/${id}`),
   createExpense: (data) => api.post('/expenses', data),
   updateExpense: (id, data) => api.put(`/expenses/${id}`, data),
-  deleteExpense: (id) => api.delete(`/expenses/${id}`)
+  deleteExpense: (id) => api.delete(`/expenses/${id}`),
+  bulkDeleteExpenses: (ids) => api.post('/expenses/bulk-delete', { ids })
 };
 
 // --- INCOME SERVICES ---
@@ -59,7 +62,8 @@ export const incomeService = {
   getIncomeById: (id) => api.get(`/income/${id}`),
   createIncome: (data) => api.post('/income', data),
   updateIncome: (id, data) => api.put(`/income/${id}`, data),
-  deleteIncome: (id) => api.delete(`/income/${id}`)
+  deleteIncome: (id) => api.delete(`/income/${id}`),
+  bulkDeleteIncome: (ids) => api.post('/income/bulk-delete', { ids })
 };
 
 // --- BUDGET SERVICES ---
@@ -82,14 +86,23 @@ export const goalService = {
 export const dashboardService = {
   getDashboard: () => api.get('/dashboard'),
   getAnalytics: (params) => api.get('/dashboard/analytics', { params }),
-  getRecommendations: () => api.get('/dashboard/recommendations')
+  getRecommendations: () => api.get('/dashboard/recommendations'),
+  getSuggestions: () => api.get('/suggestions')
 };
 
 // --- USER & SETTINGS SERVICES ---
 export const userService = {
   getProfile: () => api.get('/users/profile'),
   updateProfile: (data) => api.put('/users/profile', data),
-  changePassword: (data) => api.put('/users/change-password', data)
+  changePassword: (data) => api.put('/users/change-password', data),
+  deleteAccount: () => api.delete('/account')
+};
+
+// --- DATA EXPORT SERVICES ---
+export const exportService = {
+  getPreview: () => api.get('/data/export/preview'),
+  downloadExcel: () => api.get('/data/export/download', { responseType: 'blob' }),
+  getHistory: () => api.get('/data/export/history')
 };
 
 export default api;

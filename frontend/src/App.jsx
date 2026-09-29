@@ -17,6 +17,7 @@ import Income from './pages/Income.jsx';
 import Budget from './pages/Budget.jsx';
 import Analytics from './pages/Analytics.jsx';
 import Recommendations from './pages/Recommendations.jsx';
+import SuggestionsGuide from './pages/SuggestionsGuide.jsx';
 import Goals from './pages/Goals.jsx';
 import Profile from './pages/Profile.jsx';
 import Settings from './pages/Settings.jsx';
@@ -63,7 +64,8 @@ export const App = () => {
             <Route path="/income" element={<Income />} />
             <Route path="/budget" element={<Budget />} />
             <Route path="/analytics" element={<Analytics />} />
-            <Route path="/recommendations" element={<Recommendations />} />
+            <Route path="/suggestions" element={<SuggestionsGuide />} />
+            <Route path="/recommendations" element={<SuggestionsGuide />} />
             <Route path="/goals" element={<Goals />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />

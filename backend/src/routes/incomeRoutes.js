@@ -9,6 +9,7 @@ const router = Router();
 router.use(protect);
 
 router.post('/', validateIncome, IncomeController.createIncome);
+router.post('/bulk-delete', IncomeController.bulkDeleteIncome);
 router.get('/', IncomeController.getIncome);
 router.get('/:id', IncomeController.getIncomeById);
 router.put('/:id', IncomeController.updateIncome);

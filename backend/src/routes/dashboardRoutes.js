@@ -10,5 +10,6 @@ router.use(protect);
 router.get('/', DashboardController.getDashboard);
 router.get('/analytics', DashboardController.getAnalytics);
 router.get('/recommendations', DashboardController.getRecommendations);
+router.get('/suggestions', DashboardController.getRecommendations);
 
 export default router;

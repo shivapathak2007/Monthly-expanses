@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { getTodayISO } from '../utils/dateUtils.js';
 
 const INCOME_SOURCES = [
-  'Pocket Money',
   'Salary',
   'Freelance',
+  'Business',
+  'Investment',
+  'Allowance',
   'Gift',
-  'Scholarship',
   'Other'
 ];
 
 export const IncomeForm = ({ initialData, onSubmit, onCancel, submitLabel = 'Save Income' }) => {
   const [amount, setAmount] = useState(initialData?.amount || '');
-  const [source, setSource] = useState(initialData?.source || 'Pocket Money');
+  const [source, setSource] = useState(initialData?.source || 'Salary');
   const [description, setDescription] = useState(initialData?.description || '');
   const [incomeDate, setIncomeDate] = useState(initialData?.income_date || getTodayISO());
   const [submitting, setSubmitting] = useState(false);

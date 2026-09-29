@@ -101,7 +101,7 @@ export const Profile = () => {
           Profile & Account
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-          Manage your student profile, monthly allowance, currency and account credentials.
+          Manage your personal profile, monthly income, currency and account credentials.
         </p>
       </div>
 
@@ -126,7 +126,7 @@ export const Profile = () => {
                 <span className="font-semibold text-slate-800 dark:text-slate-200">{user?.age} years</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 dark:text-slate-400">Monthly Pocket Money:</span>
+                <span className="text-slate-500 dark:text-slate-400">Monthly Income:</span>
                 <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                   {formatCurrency(user?.monthly_income, user?.currency)}
                 </span>
@@ -194,7 +194,7 @@ export const Profile = () => {
                 </div>
 
                 <div>
-                  <label className="label-field">Monthly Income / Pocket Money</label>
+                  <label className="label-field">Monthly Income / Inflow</label>
                   <input
                     type="number"
                     min="0"

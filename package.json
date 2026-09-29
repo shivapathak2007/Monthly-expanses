@@ -1,7 +1,7 @@
 {
-  "name": "spendwise-root",
+  "name": "kharcha-root",
   "version": "1.0.0",
-  "description": "SpendWise - Teenager Expense Tracker & Smart Money Management Web Application",
+  "description": "Kharcha - Personal Expense Tracker & Smart Money Management Web Application",
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
     "dev:backend": "npm run dev --prefix backend",
@@ -22,6 +22,6 @@
     "express",
     "supabase"
   ],
-  "author": "SpendWise Team",
+  "author": "Kharcha Team",
   "license": "MIT"
 }

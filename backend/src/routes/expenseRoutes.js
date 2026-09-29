@@ -9,6 +9,7 @@ const router = Router();
 router.use(protect);
 
 router.post('/', validateExpense, ExpenseController.createExpense);
+router.post('/bulk-delete', ExpenseController.bulkDeleteExpenses);
 router.get('/', ExpenseController.getExpenses);
 router.get('/:id', ExpenseController.getExpenseById);
 router.put('/:id', ExpenseController.updateExpense);

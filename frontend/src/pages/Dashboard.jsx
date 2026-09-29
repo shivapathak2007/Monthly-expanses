@@ -148,10 +148,10 @@ export const Dashboard = () => {
           </div>
 
           <Link
-            to="/recommendations"
+            to="/suggestions"
             className="text-xs font-semibold text-brand-700 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 flex items-center gap-1 whitespace-nowrap self-end sm:self-center"
           >
-            <span>View All Insights ({data?.recommendations?.length || 0})</span>
+            <span>View Suggestions & Guide ({data?.recommendations?.length || 0})</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -170,7 +170,7 @@ export const Dashboard = () => {
         <StatCard
           title="Total Income"
           amount={data?.income || 0}
-          subtitle="Allowance, gifts & earnings"
+          subtitle="Earnings, salary & inflows"
           icon={ArrowDownLeft}
           variant="success"
           currency={currency}

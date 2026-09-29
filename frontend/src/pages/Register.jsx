@@ -65,10 +65,10 @@ export const Register = () => {
           <Wallet className="w-7 h-7" />
         </div>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Join <span className="text-brand-600 dark:text-brand-400">SpendWise</span>
+          Join <span className="text-brand-600 dark:text-brand-400">Kharcha</span>
         </h2>
         <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-          Start building smart money habits today. Track, budget, and save!
+          Personal expense tracking and smart money management for everyone.
         </p>
       </div>
 
@@ -107,7 +107,7 @@ export const Register = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="teen@example.com"
+                  placeholder="user@example.com"
                   className="input-field pl-10"
                 />
               </div>
@@ -132,7 +132,7 @@ export const Register = () => {
               </div>
 
               <div>
-                <label className="label-field">Monthly Pocket Money</label>
+                <label className="label-field">Monthly Income / Inflow</label>
                 <div className="relative">
                   <span className="text-slate-400 font-bold absolute left-3 top-1/2 -translate-y-1/2 text-xs">₹</span>
                   <input
@@ -141,7 +141,7 @@ export const Register = () => {
                     min="0"
                     value={formData.monthly_income}
                     onChange={handleChange}
-                    placeholder="5000"
+                    placeholder="25000"
                     className="input-field pl-7"
                   />
                 </div>

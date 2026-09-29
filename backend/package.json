@@ -1,7 +1,7 @@
 {
-  "name": "spendwise-backend",
+  "name": "kharcha-backend",
   "version": "1.0.0",
-  "description": "Production-ready MVC REST API for SpendWise - Teenager Expense Tracker",
+  "description": "Production-ready MVC REST API for Kharcha - Personal Expense Tracker & Smart Money Management",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
@@ -17,6 +17,7 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "exceljs": "^4.4.0",
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
     "helmet": "^8.0.0",
@@ -37,6 +38,6 @@
     "bcrypt",
     "finance"
   ],
-  "author": "SpendWise Team",
+  "author": "Kharcha Team",
   "license": "MIT"
 }

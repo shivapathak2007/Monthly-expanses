@@ -14,6 +14,7 @@ import budgetRoutes from './routes/budgetRoutes.js';
 import goalRoutes from './routes/goalRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import exportRoutes from './routes/exportRoutes.js';
 
 const app = express();
 
@@ -44,7 +45,7 @@ if (env.NODE_ENV !== 'test') {
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'SpendWise API is healthy and operational',
+    message: 'Kharcha API is healthy and operational',
     timestamp: new Date().toISOString(),
     environment: env.NODE_ENV,
     storage: env.isSupabaseConfigured() ? 'Supabase PostgreSQL' : 'Local SQLite'
@@ -58,7 +59,11 @@ app.use('/api/income', incomeRoutes);
 app.use('/api/budgets', budgetRoutes);
 app.use('/api/goals', goalRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/suggestions', dashboardRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/account', userRoutes);
+app.use('/api/data/export', exportRoutes);
+app.use('/api/export', exportRoutes);
 
 // Centralized error handling
 app.use(notFound);

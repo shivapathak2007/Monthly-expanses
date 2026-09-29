@@ -11,6 +11,7 @@ export const EXPENSE_CATEGORIES = [
 export const PAYMENT_METHODS = [
   'Cash',
   'UPI',
+  'Card',
   'Debit Card',
   'Credit Card',
   'Bank Transfer',
@@ -20,9 +21,12 @@ export const PAYMENT_METHODS = [
 export const EXPENSE_TYPES = ['need', 'want'];
 
 export const INCOME_SOURCES = [
-  'Pocket Money',
   'Salary',
   'Freelance',
+  'Business',
+  'Investment',
+  'Allowance',
+  'Pocket Money',
   'Gift',
   'Scholarship',
   'Other'

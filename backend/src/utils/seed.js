@@ -6,13 +6,13 @@ import GoalModel from '../models/goalModel.js';
 import { hashPassword } from './passwordUtils.js';
 
 async function seedData() {
-  console.log('🌱 Starting SpendWise database seed...\n');
+  console.log('🌱 Starting Kharcha database seed...\n');
 
   const demoEmail = 'shiva@example.com';
   let user = await UserModel.findByEmail(demoEmail);
 
   if (!user) {
-    console.log('👤 Creating demo teenager user...');
+    console.log('👤 Creating demo user...');
     const password_hash = await hashPassword('password123');
     user = await UserModel.create({
       name: 'Shiva Pathak',

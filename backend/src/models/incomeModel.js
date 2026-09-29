@@ -108,6 +108,18 @@ export class IncomeModel {
     if (error) throw error;
     return true;
   }
+
+  static async bulkDelete(ids, userId) {
+    if (!Array.isArray(ids) || ids.length === 0) return 0;
+    const { error } = await db
+      .from('income')
+      .delete()
+      .in('id', ids)
+      .eq('user_id', userId);
+
+    if (error) throw error;
+    return ids.length;
+  }
 }
 
 export default IncomeModel;

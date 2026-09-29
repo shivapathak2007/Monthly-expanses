@@ -91,6 +91,17 @@ export class UserModel {
     if (error) throw error;
     return true;
   }
+
+  static async deleteAccount(userId) {
+    // Delete all user records across all linked tables
+    await db.from('expenses').delete().eq('user_id', userId);
+    await db.from('income').delete().eq('user_id', userId);
+    await db.from('budgets').delete().eq('user_id', userId);
+    await db.from('financial_goals').delete().eq('user_id', userId);
+    const { error } = await db.from('users').delete().eq('id', userId);
+    if (error) throw error;
+    return true;
+  }
 }
 
 export default UserModel;

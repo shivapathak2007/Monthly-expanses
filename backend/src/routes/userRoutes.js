@@ -11,5 +11,7 @@ router.use(protect);
 router.get('/profile', UserController.getProfile);
 router.put('/profile', validateProfile, UserController.updateProfile);
 router.put('/change-password', UserController.changePassword);
+router.delete('/account', UserController.deleteAccount);
+router.delete('/', UserController.deleteAccount);
 
 export default router;

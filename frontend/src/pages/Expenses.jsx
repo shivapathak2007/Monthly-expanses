@@ -14,7 +14,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Receipt,
-  X
+  X,
+  CheckSquare,
+  Square,
+  Trash2
 } from 'lucide-react';
 
 export const Expenses = () => {
@@ -37,8 +40,14 @@ export const Expenses = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
 
-  // Delete modal state
+  // Single Delete modal state
   const [expenseToDelete, setExpenseToDelete] = useState(null);
+
+  // Bulk Selection States
+  const [isSelectMode, setIsSelectMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
 
   const fetchExpenses = async () => {
     try {
@@ -105,6 +114,37 @@ export const Expenses = () => {
     }
   };
 
+  // Bulk Selection Handlers
+  const handleToggleSelect = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleToggleSelectAll = () => {
+    if (selectedIds.length === expenses.length && expenses.length > 0) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(expenses.map((e) => e.id));
+    }
+  };
+
+  const handleBulkDeleteConfirm = async () => {
+    if (selectedIds.length === 0) return;
+    setBulkDeleting(true);
+    try {
+      await expenseService.bulkDeleteExpenses(selectedIds);
+      setShowBulkDeleteModal(false);
+      setSelectedIds([]);
+      setIsSelectMode(false);
+      fetchExpenses();
+    } catch (err) {
+      alert('Failed to delete selected expenses: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setBulkDeleting(false);
+    }
+  };
+
   const hasActiveFilters = Boolean(
     category || paymentMethod || expenseType || startDate || endDate || search
   );
@@ -122,14 +162,77 @@ export const Expenses = () => {
           </p>
         </div>
 
-        <Link
-          to="/expenses/add"
-          className="btn-primary inline-flex items-center gap-2 py-2.5 px-4 text-xs shadow-sm self-start sm:self-auto"
-        >
-          <PlusCircle className="w-4 h-4" />
-          <span>Add New Expense</span>
-        </Link>
+        <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
+          <button
+            onClick={() => {
+              setIsSelectMode(!isSelectMode);
+              setSelectedIds([]);
+            }}
+            className={`inline-flex items-center gap-1.5 py-2.5 px-3.5 rounded-xl border text-xs font-semibold transition-all ${
+              isSelectMode
+                ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 shadow-sm'
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+            }`}
+          >
+            <CheckSquare className="w-4 h-4" />
+            <span>{isSelectMode ? 'Exit Selection' : 'Select Mode'}</span>
+          </button>
+
+          <Link
+            to="/expenses/add"
+            className="btn-primary inline-flex items-center gap-2 py-2.5 px-4 text-xs shadow-sm"
+          >
+            <PlusCircle className="w-4 h-4" />
+            <span>Add New Expense</span>
+          </Link>
+        </div>
       </div>
+
+      {/* Floating / Sticky Bulk Action Toolbar */}
+      {isSelectMode && (
+        <div className="sticky top-20 z-20 p-3.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-brand-200 dark:border-brand-800 rounded-2xl shadow-lg flex items-center justify-between gap-3 animate-fade-in flex-wrap">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleToggleSelectAll}
+              className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1.5"
+            >
+              {selectedIds.length === expenses.length && expenses.length > 0 ? (
+                <CheckSquare className="w-4 h-4" />
+              ) : (
+                <Square className="w-4 h-4" />
+              )}
+              <span>
+                {selectedIds.length === expenses.length && expenses.length > 0
+                  ? 'Deselect All'
+                  : `Select All Visible (${expenses.length})`}
+              </span>
+            </button>
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-300 px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
+              Selected: {selectedIds.length}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                setIsSelectMode(false);
+                setSelectedIds([]);
+              }}
+              className="px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg border border-slate-200 dark:border-slate-700"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => setShowBulkDeleteModal(true)}
+              disabled={selectedIds.length === 0}
+              className="py-1.5 px-3.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-semibold disabled:opacity-40 flex items-center gap-1.5 shadow-sm shadow-rose-600/20 transition-all"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Delete Selected ({selectedIds.length})</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Search & Filter Toolbar */}
       <div className="card-premium p-4 space-y-4">
@@ -327,6 +430,9 @@ export const Expenses = () => {
               key={expense.id}
               expense={expense}
               currency={user?.currency || 'INR'}
+              selectable={isSelectMode}
+              selected={selectedIds.includes(expense.id)}
+              onToggleSelect={handleToggleSelect}
               onEdit={(exp) => navigate(`/expenses/edit/${exp.id}`)}
               onDelete={(exp) => setExpenseToDelete(exp)}
             />
@@ -368,7 +474,7 @@ export const Expenses = () => {
         </div>
       )}
 
-      {/* Confirm Delete Dialog */}
+      {/* Single Expense Delete Modal */}
       <ConfirmModal
         isOpen={Boolean(expenseToDelete)}
         title="Delete Expense?"
@@ -376,6 +482,17 @@ export const Expenses = () => {
         confirmText="Delete Expense"
         onConfirm={handleDeleteConfirm}
         onCancel={() => setExpenseToDelete(null)}
+        isDanger={true}
+      />
+
+      {/* Bulk Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showBulkDeleteModal}
+        title="Delete Selected Expenses?"
+        message={`Are you sure you want to permanently delete ${selectedIds.length} selected transaction${selectedIds.length === 1 ? '' : 's'}? This action cannot be undone.`}
+        confirmText={bulkDeleting ? 'Deleting...' : `Delete ${selectedIds.length} Expenses`}
+        onConfirm={handleBulkDeleteConfirm}
+        onCancel={() => setShowBulkDeleteModal(false)}
         isDanger={true}
       />
     </div>

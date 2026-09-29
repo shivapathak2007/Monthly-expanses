@@ -8,7 +8,7 @@ const ThemeContext = createContext({
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem('spendwise_theme');
+    const saved = localStorage.getItem('kharcha_theme') || localStorage.getItem('spendwise_theme');
     if (saved) return saved;
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
       ? 'dark'
@@ -22,6 +22,7 @@ export const ThemeProvider = ({ children }) => {
     } else {
       root.classList.remove('dark');
     }
+    localStorage.setItem('kharcha_theme', theme);
     localStorage.setItem('spendwise_theme', theme);
   }, [theme]);
 

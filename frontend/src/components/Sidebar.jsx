@@ -30,7 +30,7 @@ export const Sidebar = ({ mobileMenuOpen, setMobileMenuOpen }) => {
     { name: 'Income', path: '/income', icon: BadgeDollarSign },
     { name: 'Budgets', path: '/budget', icon: PieChart },
     { name: 'Analytics', path: '/analytics', icon: BarChart3 },
-    { name: 'Recommendations', path: '/recommendations', icon: Lightbulb },
+    { name: '💡 Suggestions & Guide', path: '/suggestions', icon: Lightbulb },
     { name: 'Goals', path: '/goals', icon: Target },
     { name: 'Profile', path: '/profile', icon: User },
     { name: 'Settings', path: '/settings', icon: Settings },
@@ -59,7 +59,7 @@ export const Sidebar = ({ mobileMenuOpen, setMobileMenuOpen }) => {
               <Sparkles className="w-4 h-4" />
             </div>
             <span className="font-bold text-lg text-slate-900 dark:text-white">
-              Spend<span className="text-brand-600">Wise</span>
+              Kharcha
             </span>
           </div>
 
@@ -91,7 +91,7 @@ export const Sidebar = ({ mobileMenuOpen, setMobileMenuOpen }) => {
           </nav>
         </div>
 
-        {/* Bottom Section: Teen Financial Tip & Logout */}
+        {/* Bottom Section: Habit Tip & Logout */}
         <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
           <div className="p-3 bg-gradient-to-br from-brand-50 to-indigo-50/50 dark:from-brand-950/40 dark:to-indigo-950/30 rounded-xl border border-brand-100/60 dark:border-brand-900/40">
             <div className="flex items-center gap-1.5 text-brand-700 dark:text-brand-300 font-semibold text-xs mb-1">

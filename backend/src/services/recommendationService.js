@@ -60,8 +60,8 @@ export class RecommendationService {
           id: 'welcome-tip',
           type: 'tip',
           icon: '💡',
-          title: 'Welcome to SpendWise!',
-          message: 'Start by tracking your first daily expense or pocket money deposit to receive personalized financial insights.',
+          title: 'Welcome to Kharcha!',
+          message: 'Start by tracking your first daily expense or income entry to receive real-time personalized financial insights.',
           actionText: 'Add an Expense',
           actionLink: '/expenses/add',
           severity: 'info'
@@ -214,14 +214,14 @@ export class RecommendationService {
       }
     }
 
-    // 7. General Student/Teenager Money Rule of Thumb (if few recommendations)
+    // 7. General Financial Rule of Thumb (if few recommendations)
     if (recommendations.length < 2) {
       recommendations.push({
-        id: 'teen-50-30-20-rule',
+        id: 'universal-50-30-20-rule',
         type: 'education',
         icon: '🎯',
-        title: 'The Teenager 50/30/20 Rule',
-        message: 'A great guideline for students: aim for 50% on essentials (lunch, transport, study material), 30% for fun, and 20% directly into your savings or future goals.',
+        title: 'The 50/30/20 Financial Framework',
+        message: 'A proven guideline for everyone: aim for 50% on essentials & bills, 30% on discretionary wants & lifestyle, and 20% directly into savings or debt repayment.',
         severity: 'info'
       });
     }

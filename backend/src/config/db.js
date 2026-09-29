@@ -175,6 +175,11 @@ if (env.isSupabaseConfigured()) {
       return this;
     }
 
+    in(column, values) {
+      this.conditions.push({ col: column, op: 'IN', val: values });
+      return this;
+    }
+
     order(column, { ascending = true } = {}) {
       this.orderCol = column;
       this.orderAsc = ascending;
@@ -283,27 +288,37 @@ if (env.isSupabaseConfigured()) {
           };
         }
 
-        if (this.mode === 'delete') {
-          const whereParts = [];
+        const buildWhere = () => {
+          const parts = [];
           const params = [];
           for (const cond of this.conditions) {
-            whereParts.push(`${cond.col} ${cond.op} ?`);
-            params.push(cond.val);
+            if (cond.op === 'IN') {
+              const list = Array.isArray(cond.val) ? cond.val : [cond.val];
+              if (list.length === 0) {
+                parts.push('1 = 0');
+              } else {
+                const qMarks = list.map(() => '?').join(', ');
+                parts.push(`${cond.col} IN (${qMarks})`);
+                params.push(...list);
+              }
+            } else {
+              parts.push(`${cond.col} ${cond.op} ?`);
+              params.push(cond.val);
+            }
           }
-          const whereClause = whereParts.length > 0 ? `WHERE ${whereParts.join(' AND ')}` : '';
-          const stmt = sqlite.prepare(`DELETE FROM ${this.table} ${whereClause}`);
+          const clause = parts.length > 0 ? `WHERE ${parts.join(' AND ')}` : '';
+          return { clause, params };
+        };
+
+        if (this.mode === 'delete') {
+          const { clause, params } = buildWhere();
+          const stmt = sqlite.prepare(`DELETE FROM ${this.table} ${clause}`);
           stmt.run(...params);
           return { data: null, error: null };
         }
 
         // SELECT query
-        const whereParts = [];
-        const params = [];
-        for (const cond of this.conditions) {
-          whereParts.push(`${cond.col} ${cond.op} ?`);
-          params.push(cond.val);
-        }
-        const whereClause = whereParts.length > 0 ? `WHERE ${whereParts.join(' AND ')}` : '';
+        const { clause: whereClause, params } = buildWhere();
 
         let count = null;
         if (this.hasCount) {

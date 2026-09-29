@@ -89,7 +89,7 @@ export const Recommendations = () => {
       <div className="p-4 bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 rounded-2xl flex items-start gap-3 text-xs text-slate-600 dark:text-slate-400">
         <Info className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
         <p>
-          <span className="font-semibold text-slate-800 dark:text-slate-200">Educational Guidance:</span> SpendWise recommendations are calculated from your actual spending to help you cultivate healthy budgeting and saving habits. They do not constitute certified financial or investment advice.
+          <span className="font-semibold text-slate-800 dark:text-slate-200">Educational Guidance:</span> Kharcha recommendations are calculated from your actual spending to help you cultivate healthy budgeting and saving habits. They do not constitute certified financial or investment advice.
         </p>
       </div>
 
@@ -108,7 +108,7 @@ export const Recommendations = () => {
             <Sparkles className="w-8 h-8 text-brand-500 mx-auto mb-2" />
             <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">No suggestions right now</h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
-              As you record more daily expenses and income, SpendWise will uncover smart tips here!
+              As you record more daily expenses and income, Kharcha will uncover smart tips here!
             </p>
           </div>
         ) : (
