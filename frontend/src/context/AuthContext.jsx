@@ -5,14 +5,21 @@ export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('spendwise_user');
-    return savedUser ? JSON.parse(savedUser) : null;
+    try {
+      const savedUser = localStorage.getItem('spendwise_user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch (e) {
+      return null;
+    }
   });
   const [token, setToken] = useState(() => localStorage.getItem('spendwise_token'));
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => {
+    // If token already exists in localStorage, render right away without blocking spinner
+    return !localStorage.getItem('spendwise_token');
+  });
   const [error, setError] = useState(null);
 
-  // Check current session on mount
+  // Check current session on mount in background
   useEffect(() => {
     const initAuth = async () => {
       const storedToken = localStorage.getItem('spendwise_token');
@@ -24,8 +31,12 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('spendwise_user', JSON.stringify(res.data.data.user));
           }
         } catch (err) {
-          console.error('Session expired or invalid:', err);
-          logout();
+          console.warn('Session verification notice:', err);
+          // Only clear session if token is explicitly invalid or expired (401/403)
+          if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+            logout();
+          }
+          // For network timeouts or server wakeups, keep existing local session intact!
         }
       }
       setLoading(false);
