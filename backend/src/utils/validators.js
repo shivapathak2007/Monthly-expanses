@@ -1,16 +1,11 @@
 export const EXPENSE_CATEGORIES = [
-  'Food',
-  'Travel',
-  'Shopping',
-  'Entertainment',
-  'Education',
-  'Bills',
-  'Subscriptions',
-  'Health',
-  'Gaming',
-  'Clothing',
-  'Personal Care',
-  'Other'
+  'Food & Snacks',
+  'Travel & Transport',
+  'Shopping & Clothes',
+  'Fun & Gaming',
+  'Study & College',
+  'Bills & Subscriptions',
+  'Personal & Other'
 ];
 
 export const PAYMENT_METHODS = [

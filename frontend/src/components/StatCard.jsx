@@ -11,24 +11,24 @@ export const StatCard = ({
 }) => {
   const variantStyles = {
     brand: {
-      bg: 'bg-brand-50 text-brand-600',
-      border: 'border-brand-100',
-      amountColor: 'text-slate-900'
+      bg: 'bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400',
+      border: 'border-brand-100 dark:border-brand-900/60',
+      amountColor: 'text-slate-900 dark:text-white'
     },
     success: {
-      bg: 'bg-emerald-50 text-emerald-600',
-      border: 'border-emerald-100',
-      amountColor: 'text-emerald-700'
+      bg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400',
+      border: 'border-emerald-100 dark:border-emerald-900/60',
+      amountColor: 'text-emerald-600 dark:text-emerald-400'
     },
     warning: {
-      bg: 'bg-amber-50 text-amber-600',
-      border: 'border-amber-100',
-      amountColor: 'text-amber-700'
+      bg: 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400',
+      border: 'border-amber-100 dark:border-amber-900/60',
+      amountColor: 'text-amber-600 dark:text-amber-400'
     },
     danger: {
-      bg: 'bg-rose-50 text-rose-600',
-      border: 'border-rose-100',
-      amountColor: 'text-rose-700'
+      bg: 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400',
+      border: 'border-rose-100 dark:border-rose-900/60',
+      amountColor: 'text-rose-600 dark:text-rose-400'
     }
   };
 
@@ -38,7 +38,7 @@ export const StatCard = ({
     <div className="card-premium p-5 flex flex-col justify-between card-hoverable">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">{title}</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">{title}</p>
           <h3 className={`text-2xl font-bold tracking-tight ${style.amountColor}`}>
             {formatCurrency(amount, currency)}
           </h3>
@@ -51,7 +51,7 @@ export const StatCard = ({
       </div>
 
       {subtitle && (
-        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-1.5 text-xs text-slate-500">
+        <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
           <span>{subtitle}</span>
         </div>
       )}

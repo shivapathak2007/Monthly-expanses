@@ -137,10 +137,10 @@ export const Goals = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Financial Goals
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
             Turn dreams into reality. Save for gadgets, college trips, or emergency buffers.
           </p>
         </div>
@@ -157,45 +157,45 @@ export const Goals = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="card-premium p-5">
-          <p className="text-xs font-semibold text-slate-500 uppercase">Total Saved for Goals</p>
-          <h3 className="text-2xl font-bold text-emerald-600 mt-1">
+          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Total Saved for Goals</p>
+          <h3 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
             {formatCurrency(totalSaved, currency)}
           </h3>
-          <p className="text-[11px] text-slate-400 mt-2">Active stash accumulated</p>
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2">Active stash accumulated</p>
         </div>
 
         <div className="card-premium p-5">
-          <p className="text-xs font-semibold text-slate-500 uppercase">Target Total</p>
-          <h3 className="text-2xl font-bold text-slate-900 mt-1">
+          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Target Total</p>
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
             {formatCurrency(totalTarget, currency)}
           </h3>
-          <p className="text-[11px] text-slate-400 mt-2">Combined future goals</p>
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2">Combined future goals</p>
         </div>
 
         <div className="card-premium p-5">
-          <p className="text-xs font-semibold text-slate-500 uppercase">Completed Goals</p>
-          <h3 className="text-2xl font-bold text-brand-600 mt-1">
+          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Completed Goals</p>
+          <h3 className="text-2xl font-bold text-brand-600 dark:text-brand-400 mt-1">
             {completedGoals} / {goals.length}
           </h3>
-          <p className="text-[11px] text-slate-400 mt-2">Goals fully achieved</p>
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2">Goals fully achieved</p>
         </div>
       </div>
 
       {/* Goals Grid */}
       <div className="space-y-4">
-        <h3 className="text-base font-bold text-slate-900">Your Goals</h3>
+        <h3 className="text-base font-bold text-slate-900 dark:text-white">Your Goals</h3>
 
         {loading ? (
-          <div className="p-8 text-center text-xs text-slate-400">Loading your goals...</div>
+          <div className="p-8 text-center text-xs text-slate-400 dark:text-slate-500">Loading your goals...</div>
         ) : error ? (
-          <div className="p-6 text-center card-premium text-rose-600 text-xs font-semibold">{error}</div>
+          <div className="p-6 text-center card-premium text-rose-600 dark:text-rose-400 text-xs font-semibold">{error}</div>
         ) : goals.length === 0 ? (
-          <div className="p-12 text-center card-premium bg-white border-2 border-dashed border-slate-200">
-            <div className="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mx-auto mb-3">
+          <div className="p-12 text-center card-premium border-2 border-dashed border-slate-200 dark:border-slate-800">
+            <div className="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 flex items-center justify-center mx-auto mb-3">
               <Target className="w-6 h-6" />
             </div>
-            <h4 className="text-sm font-bold text-slate-800">No savings goals created yet</h4>
-            <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
+            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">No savings goals created yet</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs mx-auto">
               Want a new pair of headphones, concert ticket, or emergency cushion? Create your first goal now!
             </p>
             <button
@@ -223,22 +223,22 @@ export const Goals = () => {
 
       {/* Create / Edit Goal Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-800 relative">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-bold text-slate-900">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 {editingGoal ? 'Edit Savings Goal' : 'Create New Goal'}
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg"
+                className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {formError && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-medium">
+              <div className="mb-4 p-3 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900/50 rounded-xl text-xs text-rose-700 dark:text-rose-300 font-medium">
                 {formError}
               </div>
             )}

@@ -65,24 +65,24 @@ export const EditExpense = () => {
       <div className="flex items-center gap-3">
         <Link
           to="/expenses"
-          className="p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors"
+          className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Edit Expense</h1>
-          <p className="text-xs text-slate-500">Modify details, categories, or need/want tags.</p>
+          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Edit Expense</h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Modify details, categories, or need/want tags.</p>
         </div>
       </div>
 
       {successMsg && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-3 text-emerald-800 text-sm font-semibold">
-          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+        <div className="p-4 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-2xl flex items-center gap-3 text-emerald-800 dark:text-emerald-300 text-sm font-semibold">
+          <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
           <span>Expense updated successfully! Redirecting...</span>
         </div>
       )}
 
-      <div className="card-premium p-6 sm:p-8 bg-white">
+      <div className="card-premium p-6 sm:p-8">
         <ExpenseForm
           initialData={expense}
           onSubmit={handleUpdate}

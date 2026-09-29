@@ -131,13 +131,16 @@ export class AnalyticsService {
     const spendingTrend = Object.values(trendMap);
 
     // Budgets with Spent & Status
-    const budgetMap = {};
-    for (const exp of currentMonthExpenses) {
-      budgetMap[exp.category] = (budgetMap[exp.category] || 0) + exp.amount;
-    }
-
     const budgetsWithProgress = currentBudgets.map(b => {
-      const spent = budgetMap[b.category] || 0;
+      const catLower = (b.category || '').toLowerCase().trim();
+      let spent = 0;
+      for (const exp of currentMonthExpenses) {
+        const expCatLower = (exp.category || '').toLowerCase().trim();
+        const expDescLower = (exp.description || '').toLowerCase().trim();
+        if (expCatLower === catLower || expDescLower.includes(catLower)) {
+          spent += exp.amount;
+        }
+      }
       const remaining = Math.max(0, b.amount - spent);
       const percentageUsed = Number(((spent / b.amount) * 100).toFixed(1));
       const isExceeded = spent > b.amount;

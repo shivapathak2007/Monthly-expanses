@@ -45,7 +45,7 @@ export const IncomeForm = ({ initialData, onSubmit, onCancel, submitLabel = 'Sav
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-medium">
+        <div className="p-3 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900/50 rounded-xl text-xs text-rose-700 dark:text-rose-300 font-medium">
           {error}
         </div>
       )}
@@ -63,7 +63,7 @@ export const IncomeForm = ({ initialData, onSubmit, onCancel, submitLabel = 'Sav
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0"
-            className="input-field pl-8 text-lg font-bold text-slate-900"
+            className="input-field pl-8 text-xl font-bold text-slate-900 dark:text-white"
           />
         </div>
       </div>

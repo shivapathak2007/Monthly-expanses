@@ -42,27 +42,27 @@ export const Recommendations = () => {
     switch (severity) {
       case 'danger':
         return {
-          bg: 'bg-rose-50/70 border-rose-200/80',
-          badge: 'bg-rose-100 text-rose-800 border-rose-200',
+          bg: 'bg-rose-50/70 dark:bg-rose-950/30 border-rose-200/80 dark:border-rose-900/50',
+          badge: 'bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-800',
           badgeText: 'Alert'
         };
       case 'warning':
         return {
-          bg: 'bg-amber-50/70 border-amber-200/80',
-          badge: 'bg-amber-100 text-amber-800 border-amber-200',
+          bg: 'bg-amber-50/70 dark:bg-amber-950/30 border-amber-200/80 dark:border-amber-900/50',
+          badge: 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800',
           badgeText: 'Caution'
         };
       case 'success':
         return {
-          bg: 'bg-emerald-50/70 border-emerald-200/80',
-          badge: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+          bg: 'bg-emerald-50/70 dark:bg-emerald-950/30 border-emerald-200/80 dark:border-emerald-900/50',
+          badge: 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
           badgeText: 'Win'
         };
       case 'info':
       default:
         return {
-          bg: 'bg-indigo-50/50 border-indigo-200/60',
-          badge: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+          bg: 'bg-indigo-50/50 dark:bg-indigo-950/30 border-indigo-200/60 dark:border-indigo-900/50',
+          badge: 'bg-indigo-100 dark:bg-indigo-950/80 text-indigo-800 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800',
           badgeText: 'Smart Tip'
         };
     }
@@ -73,23 +73,23 @@ export const Recommendations = () => {
       {/* Top Header */}
       <div>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 flex items-center justify-center">
             <Lightbulb className="w-4 h-4" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Smart Recommendations
           </h1>
         </div>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
           Personalized, actionable financial coaching generated directly from your actual recorded spending and budget data.
         </p>
       </div>
 
       {/* Safety Notice */}
-      <div className="p-4 bg-slate-100/80 border border-slate-200/80 rounded-2xl flex items-start gap-3 text-xs text-slate-600">
+      <div className="p-4 bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 rounded-2xl flex items-start gap-3 text-xs text-slate-600 dark:text-slate-400">
         <Info className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
         <p>
-          <span className="font-semibold text-slate-800">Educational Guidance:</span> SpendWise recommendations are calculated from your actual spending to help you cultivate healthy budgeting and saving habits. They do not constitute certified financial or investment advice.
+          <span className="font-semibold text-slate-800 dark:text-slate-200">Educational Guidance:</span> SpendWise recommendations are calculated from your actual spending to help you cultivate healthy budgeting and saving habits. They do not constitute certified financial or investment advice.
         </p>
       </div>
 
@@ -102,12 +102,12 @@ export const Recommendations = () => {
             <div className="h-32 card-premium bg-slate-100 animate-pulse" />
           </div>
         ) : error ? (
-          <div className="p-6 text-center card-premium text-rose-600 text-xs font-semibold">{error}</div>
+          <div className="p-6 text-center card-premium text-rose-600 dark:text-rose-400 text-xs font-semibold">{error}</div>
         ) : recommendations.length === 0 ? (
-          <div className="p-12 text-center card-premium bg-white border-2 border-dashed border-slate-200">
+          <div className="p-12 text-center card-premium border-2 border-dashed border-slate-200 dark:border-slate-800">
             <Sparkles className="w-8 h-8 text-brand-500 mx-auto mb-2" />
-            <h3 className="text-sm font-bold text-slate-800">No suggestions right now</h3>
-            <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">No suggestions right now</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
               As you record more daily expenses and income, SpendWise will uncover smart tips here!
             </p>
           </div>
@@ -121,17 +121,17 @@ export const Recommendations = () => {
               >
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   <div className="flex items-start gap-3.5">
-                    <span className="text-3xl p-2.5 rounded-2xl bg-white shadow-sm border border-slate-200/60 shrink-0">
+                    <span className="text-3xl p-2.5 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200/60 dark:border-slate-700 shrink-0">
                       {rec.icon || '💡'}
                     </span>
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="text-base font-bold text-slate-900">{rec.title}</h3>
+                        <h3 className="text-base font-bold text-slate-900 dark:text-white">{rec.title}</h3>
                         <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-full border ${style.badge}`}>
                           {style.badgeText}
                         </span>
                       </div>
-                      <p className="text-xs sm:text-sm text-slate-700 mt-1.5 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 mt-1.5 leading-relaxed">
                         {rec.message}
                       </p>
                     </div>
@@ -154,45 +154,45 @@ export const Recommendations = () => {
       </div>
 
       {/* Teenager Golden Money Rules Box */}
-      <div className="card-premium p-6 bg-white border border-slate-200">
-        <h3 className="text-base font-bold text-slate-900 mb-3 flex items-center gap-2">
+      <div className="card-premium p-6 border border-slate-200 dark:border-slate-800">
+        <h3 className="text-base font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
           <span>🧠</span>
           <span>The 4 Golden Teenager Money Rules</span>
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
+            <h4 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
               <span>⏳</span> The 24-Hour Impulse Rule
             </h4>
-            <p className="text-slate-500 mt-1 leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
               If an item is a "Want" (clothes, games, snacks), wait 24 hours. If you still crave it tomorrow, consider buying it. 70% of impulse desires vanish overnight!
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
+            <h4 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
               <span>🎯</span> The 50/30/20 Student Rule
             </h4>
-            <p className="text-slate-500 mt-1 leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
               50% for college needs & meals, 30% for fun with friends, and 20% untouched into your savings or goals fund.
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
+            <h4 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
               <span>📱</span> Track Micro-Transactions
             </h4>
-            <p className="text-slate-500 mt-1 leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
               UPI payments make spending painless. Entering ₹40 tea or ₹100 autos builds mental awareness of outflows.
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-            <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
+            <h4 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
               <span>🛡️</span> Build a ₹2,000 Emergency Stash
             </h4>
-            <p className="text-slate-500 mt-1 leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
               Keep a small buffer for flat tires, forgotten notes, or emergency cab rides so you never have to scramble.
             </p>
           </div>

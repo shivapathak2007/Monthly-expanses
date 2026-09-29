@@ -101,10 +101,10 @@ export const Dashboard = () => {
       {/* Top Greeting & Quick Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {getGreeting()}, {user?.name?.split(' ')[0] || 'Friend'} 👋
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
             Here's your real-time money overview and spending habits.
           </p>
         </div>
@@ -129,19 +129,19 @@ export const Dashboard = () => {
 
       {/* Smart Personalized Recommendation Hero Banner */}
       {topRecommendation && (
-        <div className="card-premium p-4 sm:p-5 bg-gradient-to-r from-brand-50/90 via-indigo-50/70 to-purple-50/50 border border-brand-200/60 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="card-premium p-4 sm:p-5 bg-gradient-to-r from-brand-50/90 via-indigo-50/70 to-purple-50/50 dark:from-brand-950/40 dark:via-indigo-950/30 dark:to-purple-950/20 border border-brand-200/60 dark:border-brand-800/60 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3.5">
-            <span className="text-2xl p-2 rounded-xl bg-white shadow-sm border border-brand-100">
+            <span className="text-2xl p-2 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-brand-100 dark:border-slate-700">
               {topRecommendation.icon || '💡'}
             </span>
             <div>
               <div className="flex items-center gap-2">
-                <h4 className="text-sm font-bold text-slate-900">{topRecommendation.title}</h4>
-                <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-brand-100 text-brand-800">
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white">{topRecommendation.title}</h4>
+                <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-brand-100 dark:bg-brand-950/80 text-brand-800 dark:text-brand-300">
                   Smart Suggestion
                 </span>
               </div>
-              <p className="text-xs text-slate-600 mt-1 max-w-2xl leading-relaxed">
+              <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 max-w-2xl leading-relaxed">
                 {topRecommendation.message}
               </p>
             </div>
@@ -149,7 +149,7 @@ export const Dashboard = () => {
 
           <Link
             to="/recommendations"
-            className="text-xs font-semibold text-brand-700 hover:text-brand-900 flex items-center gap-1 whitespace-nowrap self-end sm:self-center"
+            className="text-xs font-semibold text-brand-700 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 flex items-center gap-1 whitespace-nowrap self-end sm:self-center"
           >
             <span>View All Insights ({data?.recommendations?.length || 0})</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
@@ -208,10 +208,10 @@ export const Dashboard = () => {
         <div className="card-premium p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-base font-bold text-slate-900">Expenses by Category</h3>
-              <p className="text-xs text-slate-500">Distribution of where your money went this month</p>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Expenses by Category</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Distribution of where your money went this month</p>
             </div>
-            <Link to="/analytics" className="text-xs font-semibold text-brand-600 hover:text-brand-700">
+            <Link to="/analytics" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700">
               Details
             </Link>
           </div>
@@ -225,8 +225,8 @@ export const Dashboard = () => {
         <div className="card-premium p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-base font-bold text-slate-900">Spending Trend (Last 30 Days)</h3>
-              <p className="text-xs text-slate-500">Daily expenses over time</p>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Spending Trend (Last 30 Days)</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Daily expenses over time</p>
             </div>
           </div>
           <SpendingTrend data={data?.spendingTrend || []} currency={currency} />
@@ -235,11 +235,11 @@ export const Dashboard = () => {
         {/* Needs vs Wants Donut Chart */}
         <div className="card-premium p-6 lg:col-span-1 flex flex-col justify-between">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Needs vs Wants</h3>
-            <p className="text-xs text-slate-500 mb-2">Target: 60% Needs, 40% Wants or lower</p>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">Needs vs Wants</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Target: 60% Needs, 40% Wants or lower</p>
           </div>
           <NeedsWantsChart needsVsWants={data?.needsVsWants} currency={currency} />
-          <div className="pt-3 border-t border-slate-100 text-[11px] text-slate-500 text-center">
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 text-center">
             {data?.needsVsWants?.wantsPercentage > 50
               ? '💡 Consider cutting discretionary wants next week.'
               : '🌟 Great job keeping essentials prioritized!'}
@@ -251,10 +251,10 @@ export const Dashboard = () => {
       <div className="card-premium p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Monthly Spending & Income Comparison</h3>
-            <p className="text-xs text-slate-500">Compare earnings and outflows over the last 6 months</p>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">Monthly Spending & Income Comparison</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Compare earnings and outflows over the last 6 months</p>
           </div>
-          <Link to="/analytics" className="text-xs font-semibold text-brand-600 hover:text-brand-700">
+          <Link to="/analytics" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700">
             View Analytics
           </Link>
         </div>
@@ -267,11 +267,11 @@ export const Dashboard = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-slate-900">Category Budgets</h3>
-              <p className="text-xs text-slate-500">Live limits for this month</p>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Item & Category Budgets</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Live limits & tracked items for this month</p>
             </div>
-            <Link to="/budget" className="text-xs font-semibold text-brand-600 hover:text-brand-700">
-              Manage Budgets
+            <Link to="/budget" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700">
+              Manage All
             </Link>
           </div>
 
@@ -282,10 +282,10 @@ export const Dashboard = () => {
               ))}
             </div>
           ) : (
-            <div className="p-8 text-center card-premium bg-white border-dashed border-2 border-slate-200">
-              <p className="text-xs text-slate-500">No category budgets set for this month yet.</p>
+            <div className="p-8 text-center card-premium border-dashed border-2 border-slate-200 dark:border-slate-800">
+              <p className="text-xs text-slate-500 dark:text-slate-400">No category or item budgets set for this month yet.</p>
               <Link to="/budget" className="btn-primary mt-3 py-2 px-3 text-xs inline-flex">
-                + Set a Budget
+                + Fix Item Amount
               </Link>
             </div>
           )}
@@ -295,10 +295,10 @@ export const Dashboard = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-slate-900">Recent Transactions</h3>
-              <p className="text-xs text-slate-500">Latest recorded spending & income</p>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Recent Transactions</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Latest recorded spending & income</p>
             </div>
-            <Link to="/expenses" className="text-xs font-semibold text-brand-600 hover:text-brand-700">
+            <Link to="/expenses" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700">
               View All
             </Link>
           </div>
@@ -314,15 +314,15 @@ export const Dashboard = () => {
                     <div
                       className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold shadow-sm ${
                         tx.type === 'income'
-                          ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
-                          : 'bg-indigo-50 text-indigo-600 border border-indigo-100'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/60'
+                          : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/60'
                       }`}
                     >
                       {tx.type === 'income' ? '💰' : '💸'}
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-slate-900 line-clamp-1">{tx.description}</p>
-                      <p className="text-[11px] text-slate-500">
+                      <p className="text-xs font-bold text-slate-900 dark:text-white line-clamp-1">{tx.description}</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
                         {tx.category} • {tx.date} • {tx.paymentMethod}
                       </p>
                     </div>
@@ -330,7 +330,7 @@ export const Dashboard = () => {
 
                   <span
                     className={`text-sm font-bold ${
-                      tx.type === 'income' ? 'text-emerald-600' : 'text-slate-900'
+                      tx.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'
                     }`}
                   >
                     {tx.type === 'income' ? '+' : '-'}
@@ -340,8 +340,8 @@ export const Dashboard = () => {
               ))}
             </div>
           ) : (
-            <div className="p-8 text-center card-premium bg-white border-dashed border-2 border-slate-200">
-              <p className="text-xs text-slate-500">No transactions recorded yet.</p>
+            <div className="p-8 text-center card-premium border-dashed border-2 border-slate-200 dark:border-slate-800">
+              <p className="text-xs text-slate-500 dark:text-slate-400">No transactions recorded yet.</p>
               <Link to="/expenses/add" className="btn-primary mt-3 py-2 px-3 text-xs inline-flex">
                 + Add First Expense
               </Link>

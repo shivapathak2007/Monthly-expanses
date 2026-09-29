@@ -20,16 +20,16 @@ export const GoalCard = ({ goal, onContribute, onEdit, onDelete, currency = 'INR
   };
 
   return (
-    <div className={`card-premium p-5 card-hoverable ${isCompleted ? 'border-emerald-200 bg-emerald-50/20' : ''}`}>
+    <div className={`card-premium p-5 card-hoverable ${isCompleted ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50/20 dark:bg-emerald-950/20' : ''}`}>
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isCompleted ? 'bg-emerald-100 text-emerald-700' : 'bg-brand-50 text-brand-600'}`}>
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isCompleted ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300' : 'bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400'}`}>
             {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : <Target className="w-5 h-5" />}
           </div>
           <div>
-            <h4 className="text-base font-bold text-slate-800">{goal.name}</h4>
+            <h4 className="text-base font-bold text-slate-800 dark:text-slate-100">{goal.name}</h4>
             {goal.deadline && (
-              <p className="text-xs text-slate-500">Target: {formatDateFriendly(goal.deadline)}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Target: {formatDateFriendly(goal.deadline)}</p>
             )}
           </div>
         </div>
@@ -38,7 +38,7 @@ export const GoalCard = ({ goal, onContribute, onEdit, onDelete, currency = 'INR
           {onEdit && (
             <button
               onClick={() => onEdit(goal)}
-              className="p-1.5 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
+              className="p-1.5 text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
               title="Edit goal"
             >
               <Edit2 className="w-3.5 h-3.5" />
@@ -47,7 +47,7 @@ export const GoalCard = ({ goal, onContribute, onEdit, onDelete, currency = 'INR
           {onDelete && (
             <button
               onClick={() => onDelete(goal)}
-              className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
               title="Delete goal"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -59,20 +59,20 @@ export const GoalCard = ({ goal, onContribute, onEdit, onDelete, currency = 'INR
       {/* Progress Bar & Amounts */}
       <div className="mt-4">
         <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-          <span className="text-brand-700 font-bold">{goal.progressPercentage}% saved</span>
-          <span className="text-slate-500">
+          <span className="text-brand-700 dark:text-brand-400 font-bold">{goal.progressPercentage}% saved</span>
+          <span className="text-slate-500 dark:text-slate-400">
             {formatCurrency(goal.current_amount, currency)} / {formatCurrency(goal.target_amount, currency)}
           </span>
         </div>
 
-        <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+        <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-500 ${isCompleted ? 'bg-emerald-500' : 'bg-brand-600'}`}
             style={{ width: `${pct}%` }}
           />
         </div>
 
-        <div className="flex items-center justify-between text-xs text-slate-500 mt-2">
+        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mt-2">
           <span>
             {isCompleted ? 'Goal Achieved! 🎉' : `${formatCurrency(goal.remaining, currency)} to go`}
           </span>
@@ -80,7 +80,7 @@ export const GoalCard = ({ goal, onContribute, onEdit, onDelete, currency = 'INR
           {!isCompleted && !addingMoney && (
             <button
               onClick={() => setAddingMoney(true)}
-              className="inline-flex items-center gap-1 text-brand-600 hover:text-brand-700 font-semibold"
+              className="inline-flex items-center gap-1 text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-semibold"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add Money</span>
@@ -89,7 +89,7 @@ export const GoalCard = ({ goal, onContribute, onEdit, onDelete, currency = 'INR
         </div>
 
         {addingMoney && (
-          <form onSubmit={handleAdd} className="mt-3 flex items-center gap-2 pt-2 border-t border-slate-100">
+          <form onSubmit={handleAdd} className="mt-3 flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
             <input
               type="number"
               min="1"

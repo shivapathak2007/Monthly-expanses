@@ -97,11 +97,11 @@ export const validateExpense = (req, res, next) => {
     });
   }
 
-  if (!category || !EXPENSE_CATEGORIES.includes(category)) {
+  if (!category || typeof category !== 'string' || category.trim().length === 0) {
     return res.status(422).json({
       success: false,
       message: 'Validation failed',
-      error: `Category must be one of: ${EXPENSE_CATEGORIES.join(', ')}`
+      error: 'Category or product name is required'
     });
   }
 
@@ -175,11 +175,11 @@ export const validateIncome = (req, res, next) => {
 export const validateBudget = (req, res, next) => {
   const { category, amount, month, year } = req.body;
 
-  if (!category || !EXPENSE_CATEGORIES.includes(category)) {
+  if (!category || typeof category !== 'string' || category.trim().length === 0) {
     return res.status(422).json({
       success: false,
       message: 'Validation failed',
-      error: `Budget category must be one of: ${EXPENSE_CATEGORIES.join(', ')}`
+      error: 'Item or category name is required'
     });
   }
 

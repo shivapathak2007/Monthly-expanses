@@ -97,10 +97,10 @@ export const Profile = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           Profile & Account
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
           Manage your student profile, monthly allowance, currency and account credentials.
         </p>
       </div>
@@ -117,27 +117,27 @@ export const Profile = () => {
                 .toUpperCase()
                 .substring(0, 2) || 'U'}
             </div>
-            <h3 className="text-base font-bold text-slate-900 mt-3">{user?.name}</h3>
-            <p className="text-xs text-slate-500">{user?.email}</p>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white mt-3">{user?.name}</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{user?.email}</p>
 
-            <div className="mt-4 pt-4 border-t border-slate-100 text-left space-y-2 text-xs">
+            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 text-left space-y-2 text-xs">
               <div className="flex justify-between">
-                <span className="text-slate-500">Age:</span>
-                <span className="font-semibold text-slate-800">{user?.age} years</span>
+                <span className="text-slate-500 dark:text-slate-400">Age:</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200">{user?.age} years</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Monthly Pocket Money:</span>
-                <span className="font-semibold text-emerald-600">
+                <span className="text-slate-500 dark:text-slate-400">Monthly Pocket Money:</span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                   {formatCurrency(user?.monthly_income, user?.currency)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Primary Currency:</span>
-                <span className="font-semibold text-slate-800">{user?.currency || 'INR'}</span>
+                <span className="text-slate-500 dark:text-slate-400">Primary Currency:</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200">{user?.currency || 'INR'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Joined:</span>
-                <span className="font-semibold text-slate-800">
+                <span className="text-slate-500 dark:text-slate-400">Joined:</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200">
                   {formatDateFriendly(user?.created_at)}
                 </span>
               </div>
@@ -149,20 +149,20 @@ export const Profile = () => {
         <div className="md:col-span-2 space-y-6">
           {/* Edit Profile Card */}
           <div className="card-premium p-6">
-            <h3 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
-              <User className="w-4 h-4 text-brand-600" />
+            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <User className="w-4 h-4 text-brand-600 dark:text-brand-400" />
               <span>Personal Details</span>
             </h3>
 
             {profileSuccess && (
-              <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 font-semibold flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <div className="mb-4 p-3 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-xl text-xs text-emerald-800 dark:text-emerald-300 font-semibold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 <span>{profileSuccess}</span>
               </div>
             )}
 
             {profileError && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-medium">
+              <div className="mb-4 p-3 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900/50 rounded-xl text-xs text-rose-700 dark:text-rose-300 font-medium">
                 {profileError}
               </div>
             )}
@@ -234,20 +234,20 @@ export const Profile = () => {
 
           {/* Change Password Card */}
           <div className="card-premium p-6">
-            <h3 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
-              <Lock className="w-4 h-4 text-brand-600" />
+            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <Lock className="w-4 h-4 text-brand-600 dark:text-brand-400" />
               <span>Change Password</span>
             </h3>
 
             {passwordSuccess && (
-              <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 font-semibold flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <div className="mb-4 p-3 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-xl text-xs text-emerald-800 dark:text-emerald-300 font-semibold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 <span>{passwordSuccess}</span>
               </div>
             )}
 
             {passwordError && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-medium">
+              <div className="mb-4 p-3 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900/50 rounded-xl text-xs text-rose-700 dark:text-rose-300 font-medium">
                 {passwordError}
               </div>
             )}

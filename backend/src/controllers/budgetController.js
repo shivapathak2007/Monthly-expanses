@@ -58,13 +58,16 @@ export class BudgetController {
         limit: 1000
       });
 
-      const categorySpend = {};
-      for (const exp of expensesRes.data) {
-        categorySpend[exp.category] = (categorySpend[exp.category] || 0) + exp.amount;
-      }
-
       const enrichedBudgets = budgets.map(b => {
-        const spent = categorySpend[b.category] || 0;
+        const catLower = (b.category || '').toLowerCase().trim();
+        let spent = 0;
+        for (const exp of expensesRes.data) {
+          const expCatLower = (exp.category || '').toLowerCase().trim();
+          const expDescLower = (exp.description || '').toLowerCase().trim();
+          if (expCatLower === catLower || expDescLower.includes(catLower)) {
+            spent += exp.amount;
+          }
+        }
         const remaining = Math.max(0, b.amount - spent);
         const percentageUsed = Number(((spent / b.amount) * 100).toFixed(1));
         const isExceeded = spent > b.amount;
