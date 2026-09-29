@@ -22,9 +22,9 @@ app.use(helmet({
   crossOriginResourcePolicy: false
 }));
 
-// CORS configuration
+// CORS configuration (allow Vercel, localhost, and custom domains with credentials)
 app.use(cors({
-  origin: [env.CLIENT_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
