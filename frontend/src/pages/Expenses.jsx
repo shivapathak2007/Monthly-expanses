@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.js';
 import { expenseService } from '../services/api.js';
@@ -24,10 +26,7 @@ export const Expenses = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [expenses, setExpenses] = useState([]);
-  const [pagination, setPagination] = useState({ page: 1, limit: 15, total: 0, totalPages: 1 });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const queryClient = useQueryClient();
 
   // Filter States
   const [search, setSearch] = useState('');
@@ -47,49 +46,40 @@ export const Expenses = () => {
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
-  const [bulkDeleting, setBulkDeleting] = useState(false);
 
-  const fetchExpenses = async () => {
-    try {
-      setLoading(true);
-      setError('');
-
-      const params = {
-        page: currentPage,
-        limit: 15,
-        sort: sortBy
-      };
-
-      if (search.trim()) params.search = search.trim();
-      if (category) params.category = category;
-      if (paymentMethod) params.payment_method = paymentMethod;
-      if (expenseType) params.expense_type = expenseType;
-      if (startDate) params.start_date = startDate;
-      if (endDate) params.end_date = endDate;
-
-      const res = await expenseService.getExpenses(params);
-      if (res.data?.success) {
-        setExpenses(res.data.data || []);
-        if (res.data.pagination) {
-          setPagination(res.data.pagination);
-        }
-      }
-    } catch (err) {
-      console.error('Failed to fetch expenses:', err);
-      setError('Could not load expenses. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+  const queryParams = {
+    page: currentPage,
+    limit: 15,
+    sort: sortBy,
+    ...(search.trim() && { search: search.trim() }),
+    ...(category && { category }),
+    ...(paymentMethod && { payment_method: paymentMethod }),
+    ...(expenseType && { expense_type: expenseType }),
+    ...(startDate && { start_date: startDate }),
+    ...(endDate && { end_date: endDate })
   };
 
-  useEffect(() => {
-    fetchExpenses();
-  }, [currentPage, category, paymentMethod, expenseType, sortBy, startDate, endDate]);
+  const {
+    data: responseData,
+    isLoading: loading,
+    isError,
+    refetch
+  } = useQuery({
+    queryKey: ['expenses', queryParams],
+    queryFn: async () => {
+      const res = await expenseService.getExpenses(queryParams);
+      return res.data;
+    }
+  });
+
+  const expenses = responseData?.data || [];
+  const pagination = responseData?.pagination || { page: 1, limit: 15, total: 0, totalPages: 1 };
+  const error = isError ? 'Could not load expenses. Please try again.' : '';
+  const fetchExpenses = refetch;
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     setCurrentPage(1);
-    fetchExpenses();
   };
 
   const handleClearFilters = () => {
@@ -103,16 +93,18 @@ export const Expenses = () => {
     setCurrentPage(1);
   };
 
-  const handleDeleteConfirm = async () => {
-    if (!expenseToDelete) return;
-    try {
-      await expenseService.deleteExpense(expenseToDelete.id);
+  const deleteMutation = useMutation({
+    mutationFn: (id) => expenseService.deleteExpense(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['expenses'] });
       setExpenseToDelete(null);
-      fetchExpenses();
-    } catch (err) {
+    },
+    onError: (err) => {
       alert('Failed to delete expense: ' + (err.response?.data?.message || err.message));
     }
-  };
+  });
+
+  const handleDeleteConfirm = () => deleteMutation.mutate(expenseToDelete.id);
 
   // Bulk Selection Handlers
   const handleToggleSelect = (id) => {
@@ -129,21 +121,21 @@ export const Expenses = () => {
     }
   };
 
-  const handleBulkDeleteConfirm = async () => {
-    if (selectedIds.length === 0) return;
-    setBulkDeleting(true);
-    try {
-      await expenseService.bulkDeleteExpenses(selectedIds);
+  const bulkDeleteMutation = useMutation({
+    mutationFn: (ids) => expenseService.bulkDeleteExpenses(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['expenses'] });
       setShowBulkDeleteModal(false);
       setSelectedIds([]);
       setIsSelectMode(false);
-      fetchExpenses();
-    } catch (err) {
+    },
+    onError: (err) => {
       alert('Failed to delete selected expenses: ' + (err.response?.data?.message || err.message));
-    } finally {
-      setBulkDeleting(false);
     }
-  };
+  });
+
+  const handleBulkDeleteConfirm = () => bulkDeleteMutation.mutate(selectedIds);
+  const bulkDeleting = bulkDeleteMutation.isPending;
 
   const hasActiveFilters = Boolean(
     category || paymentMethod || expenseType || startDate || endDate || search
@@ -273,9 +265,7 @@ export const Expenses = () => {
             >
               <Filter className="w-3.5 h-3.5" />
               <span>Filters</span>
-              {hasActiveFilters && (
-                <span className="w-2 h-2 rounded-full bg-brand-600" />
-              )}
+              {hasActiveFilters && <span className="w-2 h-2 rounded-full bg-brand-600" />}
             </button>
 
             <select
@@ -414,7 +404,9 @@ export const Expenses = () => {
             <div className="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 flex items-center justify-center mx-auto mb-3">
               <Receipt className="w-7 h-7" />
             </div>
-            <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">No expenses found</h3>
+            <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
+              No expenses found
+            </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
               {hasActiveFilters
                 ? 'Try adjusting your filters or search keywords.'
@@ -425,18 +417,34 @@ export const Expenses = () => {
             </Link>
           </div>
         ) : (
-          expenses.map((expense) => (
-            <ExpenseCard
-              key={expense.id}
-              expense={expense}
-              currency={user?.currency || 'INR'}
-              selectable={isSelectMode}
-              selected={selectedIds.includes(expense.id)}
-              onToggleSelect={handleToggleSelect}
-              onEdit={(exp) => navigate(`/expenses/edit/${exp.id}`)}
-              onDelete={(exp) => setExpenseToDelete(exp)}
-            />
-          ))
+          <AnimatePresence>
+            {expenses.map((expense, index) => (
+              <motion.div
+                key={expense.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.95,
+                  height: 0,
+                  marginTop: 0,
+                  marginBottom: 0,
+                  padding: 0
+                }}
+                transition={{ duration: 0.2, delay: index * 0.03 }}
+              >
+                <ExpenseCard
+                  expense={expense}
+                  currency={user?.currency || 'INR'}
+                  selectable={isSelectMode}
+                  selected={selectedIds.includes(expense.id)}
+                  onToggleSelect={handleToggleSelect}
+                  onEdit={(exp) => navigate(`/expenses/edit/${exp.id}`)}
+                  onDelete={(exp) => setExpenseToDelete(exp)}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         )}
       </div>
 
@@ -445,7 +453,8 @@ export const Expenses = () => {
         <div className="flex items-center justify-between p-4 card-premium text-xs">
           <span className="text-slate-500 dark:text-slate-400">
             Showing {(pagination.page - 1) * pagination.limit + 1} -{' '}
-            {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} expenses
+            {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total}{' '}
+            expenses
           </span>
 
           <div className="flex items-center gap-1.5">

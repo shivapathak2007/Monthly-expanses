@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth.js';
 import { incomeService } from '../services/api.js';
 import IncomeForm from '../components/IncomeForm.jsx';
@@ -32,9 +34,7 @@ const SOURCE_ICONS = {
 
 export const Income = () => {
   const { user } = useAuth();
-  const [incomes, setIncomes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const queryClient = useQueryClient();
 
   // Add / Edit modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,53 +45,55 @@ export const Income = () => {
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
-  const [bulkDeleting, setBulkDeleting] = useState(false);
 
   const currency = user?.currency || 'INR';
 
-  const fetchIncomes = async () => {
-    try {
-      setLoading(true);
-      setError('');
+  const {
+    data: responseData,
+    isLoading: loading,
+    isError,
+    refetch
+  } = useQuery({
+    queryKey: ['incomes'],
+    queryFn: async () => {
       const res = await incomeService.getIncome();
-      if (res.data?.success) {
-        setIncomes(res.data.data || []);
-      }
-    } catch (err) {
-      console.error('Failed to load income:', err);
-      setError('Could not load income records');
-    } finally {
-      setLoading(false);
+      return res.data;
     }
-  };
+  });
 
-  useEffect(() => {
-    fetchIncomes();
-  }, []);
+  const incomes = responseData?.data || [];
+  const error = isError ? 'Could not load income records' : '';
+  const fetchIncomes = refetch;
 
   const totalIncome = incomes.reduce((acc, curr) => acc + curr.amount, 0);
 
-  const handleSaveIncome = async (formData) => {
-    if (editingIncome) {
-      await incomeService.updateIncome(editingIncome.id, formData);
-    } else {
-      await incomeService.createIncome(formData);
+  const saveMutation = useMutation({
+    mutationFn: (formData) => {
+      if (editingIncome) {
+        return incomeService.updateIncome(editingIncome.id, formData);
+      }
+      return incomeService.createIncome(formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['incomes'] });
+      setIsModalOpen(false);
+      setEditingIncome(null);
     }
-    setIsModalOpen(false);
-    setEditingIncome(null);
-    fetchIncomes();
-  };
+  });
 
-  const handleDeleteConfirm = async () => {
-    if (!incomeToDelete) return;
-    try {
-      await incomeService.deleteIncome(incomeToDelete.id);
+  const deleteMutation = useMutation({
+    mutationFn: (id) => incomeService.deleteIncome(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['incomes'] });
       setIncomeToDelete(null);
-      fetchIncomes();
-    } catch (err) {
+    },
+    onError: (err) => {
       alert('Failed to delete income: ' + (err.response?.data?.message || err.message));
     }
-  };
+  });
+
+  const handleSaveIncome = (formData) => saveMutation.mutate(formData);
+  const handleDeleteConfirm = () => deleteMutation.mutate(incomeToDelete.id);
 
   const handleToggleSelect = (id) => {
     setSelectedIds((prev) =>
@@ -107,21 +109,23 @@ export const Income = () => {
     }
   };
 
-  const handleBulkDeleteConfirm = async () => {
-    if (selectedIds.length === 0) return;
-    setBulkDeleting(true);
-    try {
-      await incomeService.bulkDeleteIncome(selectedIds);
+  const bulkDeleteMutation = useMutation({
+    mutationFn: (ids) => incomeService.bulkDeleteIncome(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['incomes'] });
       setShowBulkDeleteModal(false);
       setSelectedIds([]);
       setIsSelectMode(false);
-      fetchIncomes();
-    } catch (err) {
-      alert('Failed to delete selected income entries: ' + (err.response?.data?.message || err.message));
-    } finally {
-      setBulkDeleting(false);
+    },
+    onError: (err) => {
+      alert(
+        'Failed to delete selected income entries: ' + (err.response?.data?.message || err.message)
+      );
     }
-  };
+  });
+
+  const handleBulkDeleteConfirm = () => bulkDeleteMutation.mutate(selectedIds);
+  const bulkDeleting = bulkDeleteMutation.isPending;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -236,15 +240,21 @@ export const Income = () => {
         <h3 className="text-base font-bold text-slate-900 dark:text-white">Income History</h3>
 
         {loading ? (
-          <div className="p-8 text-center text-xs text-slate-400 dark:text-slate-500">Loading income entries...</div>
+          <div className="p-8 text-center text-xs text-slate-400 dark:text-slate-500">
+            Loading income entries...
+          </div>
         ) : error ? (
-          <div className="p-6 text-center card-premium text-rose-600 dark:text-rose-400 text-xs font-semibold">{error}</div>
+          <div className="p-6 text-center card-premium text-rose-600 dark:text-rose-400 text-xs font-semibold">
+            {error}
+          </div>
         ) : incomes.length === 0 ? (
           <div className="p-12 text-center card-premium border-2 border-dashed border-slate-200 dark:border-slate-800">
             <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-3">
               <BadgeDollarSign className="w-6 h-6" />
             </div>
-            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">No income recorded yet</h4>
+            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">
+              No income recorded yet
+            </h4>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs mx-auto">
               Add your salary, freelance earnings, or gifts to keep your balance accurate.
             </p>
@@ -259,92 +269,112 @@ export const Income = () => {
             </button>
           </div>
         ) : (
-          incomes.map((inc) => {
-            const isSelected = selectedIds.includes(inc.id);
-            return (
-              <div
-                key={inc.id}
-                onClick={() => {
-                  if (isSelectMode) handleToggleSelect(inc.id);
-                }}
-                className={`card-premium p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all duration-200 ${
-                  isSelectMode ? 'cursor-pointer' : 'card-hoverable'
-                } ${
-                  isSelected
-                    ? 'border-brand-500 bg-brand-50/40 dark:bg-brand-950/30 ring-2 ring-brand-500/20 shadow-md'
-                    : ''
-                }`}
-              >
-                <div className="flex items-center gap-3.5">
-                  {isSelectMode && (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleSelect(inc.id);
-                      }}
-                      className={`p-1 rounded-lg transition-colors ${
-                        isSelected
-                          ? 'text-brand-600 dark:text-brand-400'
-                          : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
-                      }`}
-                    >
-                      {isSelected ? (
-                        <CheckSquare className="w-5 h-5 fill-brand-100 dark:fill-brand-950" />
-                      ) : (
-                        <Square className="w-5 h-5" />
+          <AnimatePresence>
+            {incomes.map((inc, index) => {
+              const isSelected = selectedIds.includes(inc.id);
+              return (
+                <motion.div
+                  key={inc.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.95,
+                    height: 0,
+                    marginTop: 0,
+                    marginBottom: 0,
+                    padding: 0
+                  }}
+                  transition={{ duration: 0.2, delay: index * 0.03 }}
+                >
+                  <div
+                    onClick={() => {
+                      if (isSelectMode) handleToggleSelect(inc.id);
+                    }}
+                    className={`card-premium p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all duration-200 ${
+                      isSelectMode ? 'cursor-pointer' : 'card-hoverable'
+                    } ${
+                      isSelected
+                        ? 'border-brand-500 bg-brand-50/40 dark:bg-brand-950/30 ring-2 ring-brand-500/20 shadow-md'
+                        : ''
+                    }`}
+                  >
+                    <div className="flex items-center gap-3.5">
+                      {isSelectMode && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleSelect(inc.id);
+                          }}
+                          className={`p-1 rounded-lg transition-colors ${
+                            isSelected
+                              ? 'text-brand-600 dark:text-brand-400'
+                              : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                          }`}
+                        >
+                          {isSelected ? (
+                            <CheckSquare className="w-5 h-5 fill-brand-100 dark:fill-brand-950" />
+                          ) : (
+                            <Square className="w-5 h-5" />
+                          )}
+                        </button>
                       )}
-                    </button>
-                  )}
 
-                  <div className="w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-100 dark:border-emerald-900/60 flex items-center justify-center text-xl shrink-0">
-                    {SOURCE_ICONS[inc.source] || '💰'}
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white">{inc.source}</h4>
-                    <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                      <span>{formatDateFriendly(inc.income_date)}</span>
-                      {inc.description && (
-                        <>
-                          <span>•</span>
-                          <span className="text-slate-600 dark:text-slate-300 italic">"{inc.description}"</span>
-                        </>
+                      <div className="w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-100 dark:border-emerald-900/60 flex items-center justify-center text-xl shrink-0">
+                        {SOURCE_ICONS[inc.source] || '💰'}
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                          {inc.source}
+                        </h4>
+                        <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                          <span>{formatDateFriendly(inc.income_date)}</span>
+                          {inc.description && (
+                            <>
+                              <span>•</span>
+                              <span className="text-slate-600 dark:text-slate-300 italic">
+                                "{inc.description}"
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
+                      <span className="text-base font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
+                        +{formatCurrency(inc.amount, currency)}
+                      </span>
+                      {!isSelectMode && (
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingIncome(inc);
+                              setIsModalOpen(true);
+                            }}
+                            className="p-1.5 text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setIncomeToDelete(inc);
+                            }}
+                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       )}
                     </div>
                   </div>
-                </div>
-
-                <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
-                  <span className="text-base font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
-                    +{formatCurrency(inc.amount, currency)}
-                  </span>
-                  {!isSelectMode && (
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditingIncome(inc);
-                          setIsModalOpen(true);
-                        }}
-                        className="p-1.5 text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                      >
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setIncomeToDelete(inc);
-                        }}
-                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         )}
       </div>
 

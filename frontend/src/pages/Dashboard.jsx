@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.js';
 import { dashboardService } from '../services/api.js';
@@ -28,29 +29,22 @@ import {
 
 export const Dashboard = () => {
   const { user } = useAuth();
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  const fetchDashboardData = async () => {
-    try {
-      setLoading(true);
-      setError('');
+  const {
+    data,
+    isLoading: loading,
+    isError,
+    refetch
+  } = useQuery({
+    queryKey: ['dashboard'],
+    queryFn: async () => {
       const res = await dashboardService.getDashboard();
-      if (res.data?.success) {
-        setData(res.data.data);
-      }
-    } catch (err) {
-      console.error('Failed to load dashboard:', err);
-      setError('Could not load dashboard data. Please try again.');
-    } finally {
-      setLoading(false);
+      if (!res.data?.success) throw new Error('Failed to fetch');
+      return res.data.data;
     }
-  };
+  });
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
+  const error = isError ? 'Could not load dashboard data. Please try again.' : '';
+  const fetchDashboardData = refetch;
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -92,9 +86,8 @@ export const Dashboard = () => {
     );
   }
 
-  const topRecommendation = data?.recommendations && data.recommendations.length > 0
-    ? data.recommendations[0]
-    : null;
+  const topRecommendation =
+    data?.recommendations && data.recommendations.length > 0 ? data.recommendations[0] : null;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -117,10 +110,7 @@ export const Dashboard = () => {
             <PlusCircle className="w-4 h-4" />
             <span>Add Expense</span>
           </Link>
-          <Link
-            to="/income"
-            className="btn-secondary flex items-center gap-1.5 py-2 px-3 text-xs"
-          >
+          <Link to="/income" className="btn-secondary flex items-center gap-1.5 py-2 px-3 text-xs">
             <Plus className="w-4 h-4" />
             <span>Add Income</span>
           </Link>
@@ -136,7 +126,9 @@ export const Dashboard = () => {
             </span>
             <div>
               <div className="flex items-center gap-2">
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white">{topRecommendation.title}</h4>
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                  {topRecommendation.title}
+                </h4>
                 <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-brand-100 dark:bg-brand-950/80 text-brand-800 dark:text-brand-300">
                   Smart Suggestion
                 </span>
@@ -208,10 +200,17 @@ export const Dashboard = () => {
         <div className="card-premium p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Expenses by Category</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Distribution of where your money went this month</p>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                Expenses by Category
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Distribution of where your money went this month
+              </p>
             </div>
-            <Link to="/analytics" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700">
+            <Link
+              to="/analytics"
+              className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700"
+            >
               Details
             </Link>
           </div>
@@ -225,7 +224,9 @@ export const Dashboard = () => {
         <div className="card-premium p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Spending Trend (Last 30 Days)</h3>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                Spending Trend (Last 30 Days)
+              </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">Daily expenses over time</p>
             </div>
           </div>
@@ -236,7 +237,9 @@ export const Dashboard = () => {
         <div className="card-premium p-6 lg:col-span-1 flex flex-col justify-between">
           <div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white">Needs vs Wants</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Target: 60% Needs, 40% Wants or lower</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+              Target: 60% Needs, 40% Wants or lower
+            </p>
           </div>
           <NeedsWantsChart needsVsWants={data?.needsVsWants} currency={currency} />
           <div className="pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 text-center">
@@ -251,10 +254,17 @@ export const Dashboard = () => {
       <div className="card-premium p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">Monthly Spending & Income Comparison</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Compare earnings and outflows over the last 6 months</p>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              Monthly Spending & Income Comparison
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Compare earnings and outflows over the last 6 months
+            </p>
           </div>
-          <Link to="/analytics" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700">
+          <Link
+            to="/analytics"
+            className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700"
+          >
             View Analytics
           </Link>
         </div>
@@ -267,10 +277,17 @@ export const Dashboard = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Item & Category Budgets</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Live limits & tracked items for this month</p>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                Item & Category Budgets
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Live limits & tracked items for this month
+              </p>
             </div>
-            <Link to="/budget" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700">
+            <Link
+              to="/budget"
+              className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700"
+            >
               Manage All
             </Link>
           </div>
@@ -283,7 +300,9 @@ export const Dashboard = () => {
             </div>
           ) : (
             <div className="p-8 text-center card-premium border-dashed border-2 border-slate-200 dark:border-slate-800">
-              <p className="text-xs text-slate-500 dark:text-slate-400">No category or item budgets set for this month yet.</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                No category or item budgets set for this month yet.
+              </p>
               <Link to="/budget" className="btn-primary mt-3 py-2 px-3 text-xs inline-flex">
                 + Fix Item Amount
               </Link>
@@ -295,10 +314,17 @@ export const Dashboard = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Recent Transactions</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Latest recorded spending & income</p>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                Recent Transactions
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Latest recorded spending & income
+              </p>
             </div>
-            <Link to="/expenses" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700">
+            <Link
+              to="/expenses"
+              className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700"
+            >
               View All
             </Link>
           </div>
@@ -321,7 +347,9 @@ export const Dashboard = () => {
                       {tx.type === 'income' ? '💰' : '💸'}
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-slate-900 dark:text-white line-clamp-1">{tx.description}</p>
+                      <p className="text-xs font-bold text-slate-900 dark:text-white line-clamp-1">
+                        {tx.description}
+                      </p>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400">
                         {tx.category} • {tx.date} • {tx.paymentMethod}
                       </p>
@@ -330,7 +358,9 @@ export const Dashboard = () => {
 
                   <span
                     className={`text-sm font-bold ${
-                      tx.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'
+                      tx.type === 'income'
+                        ? 'text-emerald-600 dark:text-emerald-400'
+                        : 'text-slate-900 dark:text-white'
                     }`}
                   >
                     {tx.type === 'income' ? '+' : '-'}
@@ -341,7 +371,9 @@ export const Dashboard = () => {
             </div>
           ) : (
             <div className="p-8 text-center card-premium border-dashed border-2 border-slate-200 dark:border-slate-800">
-              <p className="text-xs text-slate-500 dark:text-slate-400">No transactions recorded yet.</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                No transactions recorded yet.
+              </p>
               <Link to="/expenses/add" className="btn-primary mt-3 py-2 px-3 text-xs inline-flex">
                 + Add First Expense
               </Link>

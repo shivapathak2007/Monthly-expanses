@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { env } from './config/env.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+import logger from './utils/logger.js';
 
 // Route imports
 import authRoutes from './routes/authRoutes.js';
@@ -19,17 +20,21 @@ import exportRoutes from './routes/exportRoutes.js';
 const app = express();
 
 // Security headers
-app.use(helmet({
-  crossOriginResourcePolicy: false
-}));
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false
+  })
+);
 
 // CORS configuration (allow Vercel, localhost, and custom domains with credentials)
-app.use(cors({
-  origin: true,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  })
+);
 
 // Body parsing
 app.use(express.json({ limit: '5mb' }));
@@ -38,7 +43,11 @@ app.use(cookieParser());
 
 // Request logging in development
 if (env.NODE_ENV !== 'test') {
-  app.use(morgan('dev'));
+  app.use(
+    morgan(':method :url :status :res[content-length] - :response-time ms', {
+      stream: { write: (message) => logger.info(message.trim()) }
+    })
+  );
 }
 
 // Health check endpoint

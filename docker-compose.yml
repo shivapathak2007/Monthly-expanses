@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - NODE_ENV=production
+      - CLIENT_URL=http://localhost:80
+      # Add your Supabase credentials here to use PostgreSQL instead of SQLite
+      # - SUPABASE_URL=
+      # - SUPABASE_SERVICE_ROLE_KEY=
+      # - SUPABASE_ANON_KEY=
+      # - JWT_SECRET=
+    restart: unless-stopped
+
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

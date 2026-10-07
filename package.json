@@ -9,10 +9,14 @@
     "install:all": "npm install && npm install --prefix backend && npm install --prefix frontend",
     "build:frontend": "npm run build --prefix frontend",
     "test:backend": "npm test --prefix backend",
-    "seed:backend": "npm run seed --prefix backend"
+    "seed:backend": "npm run seed --prefix backend",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.9"
   },
   "keywords": [
     "expense-tracker",
