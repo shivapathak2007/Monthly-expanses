@@ -44,7 +44,7 @@
 @layer components {
   /* Premium card styling with Dark Mode */
   .card-premium {
-    @apply bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-white/40 dark:border-slate-800/60 shadow-card transition-all duration-300;
+    @apply bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl rounded-[1.5rem] border border-white/50 dark:border-white/5 shadow-glass hover:border-brand-500/30 dark:hover:border-brand-500/30 hover:shadow-glow-brand transition-all duration-500;
   }
 
   .glass-panel {

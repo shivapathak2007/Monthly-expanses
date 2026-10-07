@@ -35,23 +35,30 @@ export const StatCard = ({
   const style = variantStyles[variant] || variantStyles.brand;
 
   return (
-    <div className="card-premium p-5 flex flex-col justify-between card-hoverable">
-      <div className="flex items-start justify-between">
+    <div className="card-premium p-5 flex flex-col justify-between card-hoverable group relative overflow-hidden">
+      <div
+        className={`absolute -right-6 -top-6 w-24 h-24 ${style.bg} opacity-20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700`}
+      ></div>
+      <div className="flex items-start justify-between relative z-10">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">{title}</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            {title}
+          </p>
           <h3 className={`text-2xl font-bold tracking-tight ${style.amountColor}`}>
             {formatCurrency(amount, currency)}
           </h3>
         </div>
         {Icon && (
-          <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${style.bg} border ${style.border}`}>
+          <div
+            className={`w-11 h-11 rounded-xl flex items-center justify-center ${style.bg} border ${style.border}`}
+          >
             <Icon className="w-5 h-5" />
           </div>
         )}
       </div>
 
       {subtitle && (
-        <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+        <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/5 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 relative z-10">
           <span>{subtitle}</span>
         </div>
       )}
