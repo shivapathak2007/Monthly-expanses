@@ -30,9 +30,18 @@ const AppLayout = () => {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
-      <Navbar mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
-      <div className="flex-1 flex max-w-7xl w-full mx-auto">
+    <div className="min-h-screen bg-emerald-50/50 dark:bg-[#022019] text-slate-900 dark:text-emerald-50 flex flex-col transition-colors duration-500 overflow-hidden relative">
+      {/* Premium Ambient Background - Professional Finance Green Theme */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute -top-[10%] -left-[10%] w-[40vw] h-[40vw] rounded-full bg-emerald-400/20 dark:bg-emerald-500/10 blur-[120px] animate-blob" />
+        <div className="absolute top-[20%] -right-[10%] w-[30vw] h-[30vw] rounded-full bg-teal-400/20 dark:bg-teal-500/10 blur-[120px] animate-blob animation-delay-2000" />
+        <div className="absolute -bottom-[20%] left-[20%] w-[50vw] h-[50vw] rounded-full bg-green-400/20 dark:bg-emerald-600/10 blur-[150px] animate-blob animation-delay-4000" />
+      </div>
+
+      <div className="relative z-50 w-full flex-none">
+        <Navbar mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
+      </div>
+      <div className="flex-1 flex max-w-7xl w-full mx-auto relative z-10">
         <Sidebar mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-full overflow-hidden relative">
           <AnimatePresence mode="wait">

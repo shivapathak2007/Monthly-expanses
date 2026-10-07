@@ -94,10 +94,10 @@ export const Dashboard = () => {
       {/* Top Greeting & Quick Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gradient animate-fade-in drop-shadow-sm">
             {getGreeting()}, {user?.name?.split(' ')[0] || 'Friend'} 👋
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
             Here's your real-time money overview and spending habits.
           </p>
         </div>
@@ -119,8 +119,10 @@ export const Dashboard = () => {
 
       {/* Smart Personalized Recommendation Hero Banner */}
       {topRecommendation && (
-        <div className="card-premium p-4 sm:p-5 bg-gradient-to-r from-brand-50/90 via-indigo-50/70 to-purple-50/50 dark:from-brand-950/40 dark:via-indigo-950/30 dark:to-purple-950/20 border border-brand-200/60 dark:border-brand-800/60 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3.5">
+        <div className="glass-panel p-5 sm:p-6 bg-gradient-to-br from-brand-50/80 via-white/40 to-indigo-50/50 dark:from-brand-900/30 dark:via-slate-900/40 dark:to-indigo-900/20 border border-brand-200/60 dark:border-brand-700/50 rounded-2xl shadow-glow-brand flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 relative overflow-hidden group hover:scale-[1.01] transition-transform duration-300">
+          <div className="absolute -right-10 -top-10 w-40 h-40 bg-brand-400/20 blur-3xl rounded-full group-hover:scale-110 transition-transform duration-700" />
+
+          <div className="flex items-start gap-4 relative z-10">
             <span className="text-2xl p-2 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-brand-100 dark:border-slate-700">
               {topRecommendation.icon || '💡'}
             </span>
